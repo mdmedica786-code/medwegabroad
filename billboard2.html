@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MEDWEG – Billboard 12x6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* Add styles back from context... omitted for brevity in thought, but full in output */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
+      padding: 30px;
+    }
+
+    /* ── BILLBOARD 2400x1200 ── */
+    .billboard {
+      width: 2400px;
+      min-width: 2400px;
+      height: 1200px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #021228 0%, #0A3D6B 50%, #1570B0 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+      border: 12px solid #000;
+    }
+
+    /* ── DECORATIVE PLANE (above students) ── */
+    .plane-decoration {
+      position: absolute;
+      top: 30px;
+      right: 280px;
+      z-index: 15;
+      opacity: 0.9;
+    }
+    .plane-decoration svg {
+      width: 220px;
+      height: 220px;
+      filter: drop-shadow(0 10px 30px rgba(255,215,0,0.4));
+    }
+
+    /* Dotted trail behind plane */
+    .plane-trail {
+      position: absolute;
+      top: 160px;
+      right: 480px;
+      width: 500px;
+      height: 100px;
+      z-index: 12;
+    }
+    .plane-trail svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── MEDICAL STUDENTS (RIGHT, cropped lower body) ── */
+    .students-image {
+      position: absolute;
+      bottom: 200px;
+      right: 0;
+      width: 52%;
+      height: 800px;
+      background: url('medical_students.png') center top / cover no-repeat;
+      z-index: 10;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 12%, black 30%);
+      mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 12%, black 30%);
+    }
+
+    /* ── QR CODE (top right corner, BIG) ── */
+    .qr-section {
+      position: absolute;
+      top: 35px;
+      right: 35px;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .qr-box {
+      width: 200px;
+      height: 200px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.3);
+      border: 4px solid #FFD700;
+    }
+    .qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .qr-label {
+      font-size: 22px;
+      font-weight: 900;
+      color: #FFD700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* ── GOLDEN LEFT ACCENT ── */
+    .gold-accent {
+      position: absolute;
+      top: 0; left: 0;
+      width: 10px;
+      height: 1000px;
+      background: linear-gradient(180deg, #FFD700, #B8860B, #FFD700);
+      z-index: 5;
+    }
+
+    /* ── MAIN CONTENT (LEFT) ── */
+    .content-area {
+      position: relative;
+      z-index: 20;
+      padding: 30px 80px 30px 80px;
+      display: flex;
+      flex-direction: column;
+      width: 58%;
+      height: 1000px;
+    }
+
+    /* ── LOGO (top left, moved up) ── */
+    .logo-img {
+      width: 230px;
+      height: auto;
+      filter: drop-shadow(0 6px 15px rgba(0,0,0,0.5));
+      margin-bottom: 5px;
+    }
+
+    /* ── NMC BADGE ── */
+    .nmc-badge {
+      position: absolute;
+      top: 30px;
+      left: 340px;
+      width: 170px;
+      min-width: 170px;
+      height: 170px;
+      min-height: 170px;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+      border-radius: 50%;
+      border: 6px solid #FFD700;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(255,215,0,0.3);
+      padding: 12px;
+      flex-shrink: 0;
+      z-index: 25;
+    }
+    .nmc-badge::before {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 3px dashed rgba(255,215,0,0.7);
+    }
+    .nmc-badge svg { 
+      width: 30px; height: 30px; 
+      fill: #D4A017; 
+      margin-bottom: 6px; 
+    }
+    .nmc-badge p {
+      font-size: 20px;
+      font-weight: 800;
+      color: #031B33;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── TYPOGRAPHY — MASSIVE BOLD ── */
+    .tagline {
+      font-family: 'Caveat', cursive;
+      font-size: 60px;
+      color: rgba(255,255,255,0.9);
+      line-height: 1;
+      margin-bottom: 5px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .main-heading {
+      font-size: 160px;
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 0.9;
+      letter-spacing: -4px;
+      margin-bottom: 0;
+      text-shadow: 
+        0 0 60px rgba(255,255,255,0.1),
+        0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    .sub-heading {
+      font-size: 95px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 6px 15px rgba(255,215,0,0.25));
+    }
+
+    .countries {
+      font-size: 42px;
+      font-weight: 800;
+      color: #E0F7FA;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+    }
+    .countries span { color: #FFD700; }
+
+    /* ── PRICE — BIG BOLD VIBRANT ── */
+    .price-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    .price-label {
+      font-size: 48px;
+      font-weight: 800;
+      color: #FFFFFF;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    }
+    .price-amount {
+      font-size: 110px;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(180deg, #FFE44D, #FFA500, #FF6B00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 8px 20px rgba(255,160,0,0.5));
+      letter-spacing: -3px;
+    }
+    .price-unit {
+      font-size: 50px;
+      font-weight: 900;
+      color: #FFD700;
+      text-shadow: 0 4px 15px rgba(255,215,0,0.4);
+    }
+
+    /* ── BULLETS ── */
+    .bullets {
+      display: flex;
+      gap: 35px;
+      flex-wrap: wrap;
+    }
+    .bullet {
+      font-size: 26px;
+      font-weight: 700;
+      color: #E0F7FA;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bullet svg {
+      width: 28px; height: 28px;
+      fill: #FFD700;
+      flex-shrink: 0;
+    }
+
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      background: #010C1A;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      z-index: 25;
+      border-top: 5px solid #FFD700;
+    }
+
+    .contact-left {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .phone {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 72px;
+      font-weight: 900;
+      color: #FFD700;
+      letter-spacing: -2px;
+      white-space: nowrap;
+    }
+    .phone svg { width: 58px; height: 58px; fill: #FFD700; }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-left: 4px solid rgba(255,255,255,0.2);
+      padding-left: 50px;
+    }
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 30px;
+      font-weight: 700;
+      color: #E0F7FA;
+      letter-spacing: 1px;
+    }
+    .detail-item svg { width: 36px; height: 36px; fill: #76b5c5; }
+
+    .website-url {
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+    .website-url span { color: #FFD700; }
+  </style>
+</head>
+<body>
+
+<div class="billboard">
+  
+  <!-- Gold accent line -->
+  <div class="gold-accent"></div>
+
+  <!-- Decorative Plane SVG above students -->
+  <div class="plane-decoration">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="planeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FFD700"/>
+          <stop offset="50%" stop-color="#FFA500"/>
+          <stop offset="100%" stop-color="#FFD700"/>
+        </linearGradient>
+      </defs>
+      <!-- Airplane body -->
+      <g transform="translate(30, 20) rotate(-25, 100, 100)">
+        <path d="M 90 20 L 110 20 L 112 70 L 170 95 L 170 110 L 112 95 L 110 150 L 130 165 L 130 175 L 100 165 L 70 175 L 70 165 L 90 150 L 88 95 L 30 110 L 30 95 L 88 70 Z" fill="url(#planeGold)" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- Dotted trail behind plane -->
+  <div class="plane-trail">
+    <svg viewBox="0 0 500 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 0,80 Q 150,10 300,50 T 500,20" fill="none" stroke="#FFD700" stroke-width="3" stroke-dasharray="12,12" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Medical Students (cropped, bottom-right) -->
+  <div class="students-image"></div>
+
+  <!-- QR Code (top-right corner, BIG) -->
+  <div class="qr-section">
+    <div class="qr-box">
+      <img src="qrcode.png" alt="Scan to visit medwegabroad.com" />
+    </div>
+    <div class="qr-label">Scan Me</div>
+  </div>
+
+  <!-- ── CONTENT (LEFT SIDE) ── -->
+  <div class="content-area">
+    
+    <!-- Logo (top, moved up) -->
+    <img src="medweg_logo_final.png" alt="MEDWEG Logo" class="logo-img" />
+
+    <!-- NMC Badge (circle, next to logo) -->
+    <div class="nmc-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+      <p>NMC<br>Approved<br>&amp;<br>WHO<br>Recognized</p>
+    </div>
+
+    <!-- Tagline -->
+    <div class="tagline">From Dream to Destination</div>
+
+    <!-- MASSIVE HEADINGS -->
+    <div class="main-heading">MBBS ABROAD</div>
+    <div class="sub-heading">ADMISSIONS 2026</div>
+    
+    <div class="countries">Uzbekistan <span>•</span> Kazakhstan <span>•</span> Kyrgyzstan <span>•</span> Russia</div>
+
+    <!-- PRICE — BIG BOLD VIBRANT -->
+    <div class="price-section">
+      <div class="price-label">Tuition<br>From</div>
+      <div class="price-amount">₹16</div>
+      <div class="price-unit">LAKHS<br><span style="font-size:28px; color:#E0F7FA; font-weight:600;">Onwards</span></div>
+    </div>
+
+    <!-- Bullets -->
+    <div class="bullets">
+      <div class="bullet">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Trusted Guidance
+      </div>
+      <div class="bullet">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Hassle-Free Admission
+      </div>
+      <div class="bullet">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Higher FMGE Success
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── BOTTOM BAR ── -->
+  <div class="bottom-bar">
+    <div class="contact-left">
+      <div class="phone">
+        <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+        +91-87969 42407
+      </div>
+      <div class="contact-details">
+        <div class="detail-item">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          medwegaabroad@gmail.com
+        </div>
+        <div class="detail-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Khori Jamalpur, Faridabad – 121004
+        </div>
+      </div>
+    </div>
+    
+    <div class="website-url">
+      <span>medwegabroad</span>.com
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
