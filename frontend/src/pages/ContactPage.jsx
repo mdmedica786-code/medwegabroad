@@ -164,6 +164,28 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* Google Map Section */}
+      <section className="py-10 px-5 sm:px-12 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="font-montserrat text-2xl font-extrabold text-brand-blue mb-6 text-center">Visit Our Office</div>
+          <div className="w-full h-[400px] rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+            <iframe
+              title="MedWeg Office Location"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight="0"
+              marginWidth="0"
+              src="https://maps.google.com/maps?q=28.314741789369158,77.17694988119791&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            ></iframe>
+          </div>
+          <div className="text-center mt-4 text-sm text-[#5a6a8a] font-medium">
+            JK Clinic, Khori Jamalpur, Dhauj, Faridabad - 121004
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
