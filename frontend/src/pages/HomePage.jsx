@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { MessageCircle, ArrowRight, ChevronRight, ChevronLeft, Phone, Instagram } from 'lucide-react'
 import AnimatedCounter from '../components/AnimatedCounter'
 import { countries, whyChooseUs, testimonials } from '../data/constants'
+import emailjs from '@emailjs/browser'
+import { Loader2, CheckCircle2, X } from 'lucide-react'
 
 function InstagramFeed() {
   useEffect(() => {
@@ -53,6 +55,49 @@ function InstagramFeed() {
 
 export default function HomePage({ setPage, setSelectedCountry }) {
   const [testimonialIdx, setTestimonialIdx] = useState(0)
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviewLoading, setReviewLoading] = useState(false)
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
+  const [reviewForm, setReviewForm] = useState({ name: "", email: "", text: "" })
+
+  const handleReviewChange = (e) => setReviewForm({ ...reviewForm, [e.target.name]: e.target.value })
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault()
+    if (!reviewForm.name || !reviewForm.text) return
+    setReviewLoading(true)
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          subject: "New Student Review Submission!",
+          name: reviewForm.name,
+          email: reviewForm.email || "Not provided",
+          message: reviewForm.text,
+          phone: "N/A",
+          city: "N/A",
+          academicScore: "N/A",
+          neetScore: "N/A",
+          preferredCountry: "N/A",
+          budget: "N/A",
+          session: "N/A",
+          source: "N/A"
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      )
+      setReviewSubmitted(true)
+      setTimeout(() => {
+        setShowReviewModal(false)
+        setReviewSubmitted(false)
+        setReviewForm({ name: "", email: "", text: "" })
+      }, 3000)
+    } catch (err) {
+      console.error(err)
+      alert("Failed to submit review. Please try again.")
+    }
+    setReviewLoading(false)
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -281,6 +326,15 @@ export default function HomePage({ setPage, setSelectedCountry }) {
               </div>
             </div>
           </div>
+          
+          <div className="mt-10 text-center">
+            <button 
+              onClick={() => setShowReviewModal(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#dde2ea] text-[#5a6a8a] font-montserrat text-sm font-bold tracking-wide hover:border-brand-orange hover:text-brand-orange transition-all bg-white shadow-sm"
+            >
+              <MessageCircle size={16} /> Leave a Review
+            </button>
+          </div>
         </div>
       </section>
 
@@ -313,6 +367,59 @@ export default function HomePage({ setPage, setSelectedCountry }) {
           </div>
         </div>
       </section>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-brand-blue/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl w-full max-w-[500px] overflow-hidden shadow-2xl relative">
+            <button 
+              onClick={() => setShowReviewModal(false)}
+              className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-brand-blue transition-colors z-10"
+            >
+              <X size={18} />
+            </button>
+            
+            <div className="p-8 md:p-10">
+              {reviewSubmitted ? (
+                <div className="text-center py-6 animate-fade-in-up">
+                  <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 size={32} className="text-brand-orange" />
+                  </div>
+                  <h3 className="font-montserrat text-2xl font-bold text-brand-blue mb-2">Thank You!</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Your review has been submitted successfully and sent to our team for approval. We appreciate your feedback!
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-6">
+                    <h3 className="font-montserrat text-2xl font-bold text-brand-blue mb-2">Share Your Experience</h3>
+                    <p className="text-sm text-gray-500">We'd love to hear about your journey with MedWeg.</p>
+                  </div>
+                  
+                  <form onSubmit={handleReviewSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1.5">Your Name *</label>
+                      <input type="text" required name="name" value={reviewForm.name} onChange={handleReviewChange} className="w-full p-3 border-1.5 border-[#dde2ea] rounded-xl text-sm bg-gray-50 focus:bg-white transition-colors" placeholder="e.g. Rahul Kumar" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1.5">Email Address (Optional)</label>
+                      <input type="email" name="email" value={reviewForm.email} onChange={handleReviewChange} className="w-full p-3 border-1.5 border-[#dde2ea] rounded-xl text-sm bg-gray-50 focus:bg-white transition-colors" placeholder="For our records only" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1.5">Your Review *</label>
+                      <textarea required name="text" value={reviewForm.text} onChange={handleReviewChange} rows={4} className="w-full p-3 border-1.5 border-[#dde2ea] rounded-xl text-sm bg-gray-50 focus:bg-white transition-colors resize-y font-sans" placeholder="Tell us how we helped you..." />
+                    </div>
+                    <button type="submit" disabled={reviewLoading} className="w-full bg-gradient-to-br from-brand-orange to-brand-orange-light text-white font-montserrat text-sm font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 mt-2 disabled:opacity-70 flex justify-center items-center gap-2">
+                      {reviewLoading ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : "Submit Review"}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

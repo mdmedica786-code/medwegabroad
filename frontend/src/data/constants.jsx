@@ -134,26 +134,59 @@ export const services = [
 
 export const testimonials = [
   {
-    name: "Priya Sharma",
-    university: "Tashkent Medical Academy, Uzbekistan",
-    text: "MEDWEG made my dream of studying medicine abroad a reality. From application to arrival, every step was handled with care and professionalism. I could not have asked for better guidance.",
-    initials: "PS",
-    year: "2024",
+    name: "Aadya",
+    university: "North India",
+    text: "MedWeg Abroad turned my medical dream into reality. From shortlisting the right foreign medical universities to handling the document verification, their team was incredibly professional. I never felt lost during the entire process.",
+    initials: "AA",
   },
   {
-    name: "Rahul Verma",
-    university: "Kazakh National Medical University",
-    text: "The team at MEDWEG was incredibly responsive and transparent throughout the process. No hidden fees, no confusion — just honest, professional support every step of the way.",
-    initials: "RV",
-    year: "2023",
+    name: "Aditi",
+    university: "South India",
+    text: "Choosing MedWeg Abroad was the best decision I made for my medical career. They guided me through the university applications efficiently and ensured all my paperwork was flawless.",
+    initials: "AD",
   },
   {
-    name: "Ananya Patel",
-    university: "Kyrgyz State Medical Academy",
-    text: "Studying abroad felt impossible until I found MEDWEG. Affordable fees, an NMC-approved university, and constant support even after I arrived on campus. Truly grateful.",
-    initials: "AP",
-    year: "2024",
+    name: "Anwesha",
+    university: "East India",
+    text: "I was highly skeptical about studying medicine abroad initially, but the counselors at MedWeg cleared all my doubts. They mapped out a brilliant path for my future career.",
+    initials: "AN",
   },
+  {
+    name: "Jinal",
+    university: "West India",
+    text: "The entire team is exceptionally knowledgeable about international medical curricula. They helped me pick a university that has a fantastic track record for licensing exam passing rates.",
+    initials: "JI",
+  },
+  {
+    name: "Hassam Ali",
+    university: "Featured Student",
+    text: "MedWeg provided exceptional support right from day one. Their team made sure my academic transcripts and visa files were processed without a single delay. A highly professional experience.",
+    initials: "HA",
+  },
+  {
+    name: "Ilyas Muhammad",
+    university: "Featured Student",
+    text: "The technical guidance and deep understanding of university infrastructures they offer is unmatched. They don't just find you a seat; they ensure you land in an environment built for strong clinical and academic growth.",
+    initials: "IM",
+  },
+  {
+    name: "Aarav",
+    university: "Global Student",
+    text: "MedWeg provides top-tier consultation. Their systematic approach to applications saves a lot of time, and their student support network is very strong.",
+    initials: "AA",
+  },
+  {
+    name: "Myra",
+    university: "North India",
+    text: "The visa processing stage can be so stressful, but the team at MedWeg handled it flawlessly. They kept me updated at every step, and my visa came through without a single hiccup.",
+    initials: "MY",
+  },
+  {
+    name: "Ravi Kumar",
+    university: "Featured Student",
+    text: "They made a highly complex international admission process incredibly simple for my family. Their step-by-step assistance is the reason I am studying at a top medical university today.",
+    initials: "RK",
+  }
 ]
 
 export const stats = [
