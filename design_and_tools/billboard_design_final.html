@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MEDWEG Billboard Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0D1B3E;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Main Billboard Container */
+        .billboard {
+            width: 2400px;
+            height: 1200px;
+            background-color: #2b659c; 
+            /* Using the lighter master background */
+            background-image: url('file:///C:/Users/ILYAS/.gemini/antigravity/brain/a3caf3dd-e8bd-43b8-bba4-3802d19a7c94/billboard_bg_final_master_1782523335287.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 12px solid #1a1a1a;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Medium blue overlay for left side text readability - not too dark! */
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 65%;
+            height: 1030px; 
+            background: linear-gradient(90deg, rgba(15, 60, 115, 0.9) 0%, rgba(30, 100, 170, 0.75) 60%, rgba(255, 255, 255, 0) 100%);
+            z-index: 5;
+        }
+
+        /* NMC Badge (Top Left) */
+        .nmc-badge {
+            position: absolute;
+            top: 50px;
+            left: 80px;
+            z-index: 10;
+            width: 140px;
+            height: 140px;
+            background: #fffdf5;
+            border-radius: 50%;
+            border: 5px solid #d4af37; /* Gold */
+            box-shadow: inset 0 0 0 3px white, 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+        }
+        .nmc-badge .star {
+            color: #d4af37;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .nmc-badge .text {
+            color: #0D1B3E;
+            font-weight: 800;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        /* Right Side QR */
+        .qr-section {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 3px solid #d4af37;
+        }
+        .qr-code {
+            width: 160px;
+            height: 160px;
+            margin-bottom: 10px;
+        }
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block; 
+        }
+        .qr-text {
+            color: #d4af37;
+            font-weight: 800;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+
+        /* Main Content Text Stack */
+        .content-left {
+            position: absolute;
+            top: 60px; /* Moved up to fit the centered logo */
+            left: 80px;
+            width: 55%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        .text-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            text-align: center;
+        }
+
+        /* Centered Logo */
+        .logo {
+            width: 320px; /* Made slightly larger since it's the centerpiece */
+            margin-bottom: 25px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        
+        .script-text {
+            font-family: 'Caveat', cursive;
+            color: #e3ba4b; /* Brighter gold */
+            font-size: 70px; 
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: -5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .category-label {
+            color: #FFD700; /* Bright gold */
+            font-size: 45px; 
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-text {
+            color: #ffffff; /* White to pop on medium blue */
+            font-size: 105px; 
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+
+        .countries {
+            color: #ffffff; /* White */
+            font-size: 34px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .countries span {
+            color: #e3ba4b;
+            font-weight: 900;
+            margin: 0 10px;
+        }
+
+        /* Price Banner Pill */
+        .price-banner {
+            background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%);
+            padding: 20px 60px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.5);
+            margin-bottom: 45px;
+            border: 2px solid #ecd078;
+        }
+        .price-banner h3 {
+            color: #0D1B3E;
+            font-size: 40px; 
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+        }
+
+        /* Bullet Points */
+        .bullets {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            justify-content: center;
+        }
+        .bullet-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 26px; 
+            font-weight: 600;
+            color: #ffffff; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .check-circle {
+            width: 32px;
+            height: 32px;
+            background-color: transparent;
+            border: 3px solid #e3ba4b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #e3ba4b;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 170px;
+            background-color: #0a142e; /* Very Dark Navy */
+            border-top: 6px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            z-index: 20;
+        }
+
+        .contact-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .phone-icon {
+            color: #d4af37;
+            font-size: 50px;
+        }
+        .phone-number {
+            color: #d4af37;
+            font-size: 75px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .divider {
+            width: 2px;
+            height: 90px;
+            background-color: rgba(255,255,255,0.2);
+            margin: 0 40px;
+        }
+
+        .contact-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .contact-icon {
+            color: #87CEEB;
+            font-size: 28px;
+            width: 35px;
+            text-align: center;
+        }
+        .contact-text {
+            color: white;
+            font-size: 26px;
+            font-weight: 500;
+        }
+
+        .contact-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .apply-btn {
+            background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%);
+            color: #0D1B3E;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 38px;
+            font-weight: 900;
+            text-transform: uppercase;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            border: 2px solid #ecd078;
+        }
+
+        /* SVG Icons */
+        svg {
+            fill: currentColor;
+            width: 1em;
+            height: 1em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="billboard">
+        <!-- Lighter blue gradient overlay -->
+        <div class="gradient-overlay"></div>
+
+        <!-- NMC Badge stays top left -->
+        <div class="nmc-badge">
+            <div class="star">★</div>
+            <div class="text">NMC<br>Approved<br>& WHO<br>Recognized</div>
+        </div>
+
+        <!-- Top Right QR Code -->
+        <div class="qr-section">
+            <div class="qr-code">
+                <!-- IMPORTANT: Your exact real QR code must be saved as qr_code.png in the D:\med veg\ folder -->
+                <img src="../qr_code.png" alt="QR Code" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://medwegabroad.com';">
+            </div>
+            <div class="qr-text">SCAN ME</div>
+        </div>
+
+        <div class="content-left">
+            <!-- Text Stack (Centered internally) -->
+            <div class="text-stack">
+                <!-- Logo moved to center of text stack -->
+                <img src="../logo.png" alt="MEDWEG Logo" class="logo">
+                
+                <div class="script-text">From Dream to Destination</div>
+                <div class="category-label">MBBS ABROAD</div>
+                <div class="hero-text">Admissions Open 2026</div>
+                
+                <div class="countries">
+                    Uzbekistan <span>•</span> Kazakhstan <span>•</span> Kyrgyzstan <span>•</span> Russia <span>•</span> Georgia
+                </div>
+
+                <div class="price-banner">
+                    <h3>Tuition Starting from Just ₹15 Lakhs</h3>
+                </div>
+
+                <div class="bullets">
+                    <div class="bullet-item">
+                        <div class="check-circle">✓</div>
+                        Trusted Guidance
+                    </div>
+                    <div class="bullet-item">
+                        <div class="check-circle">✓</div>
+                        Hassle-Free Admission
+                    </div>
+                    <div class="bullet-item">
+                        <div class="check-circle">✓</div>
+                        Higher FMGE Success Rate
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div style="display:flex; align-items:center;">
+                <div class="contact-left">
+                    <div class="phone-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.03 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                    </div>
+                    <div class="phone-number">+91-87969 42407</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="contact-center">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </div>
+                        <div class="contact-text">medwegaabroad@gmail.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        </div>
+                        <div class="contact-text">Khori Jamalpur, Dhauj, Faridabad – 121004</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-right">
+                <div class="apply-btn">APPLY NOW</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

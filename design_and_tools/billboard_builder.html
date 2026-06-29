@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MEDWEG Billboard Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            padding: 20px;
+        }
+        
+        .toolbar {
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .toolbar button {
+            background: #d4af37;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #0D1B3E;
+        }
+        .toolbar button:hover {
+            background: #FFD700;
+        }
+
+        /* Main Billboard Container */
+        .billboard {
+            width: 2400px;
+            height: 1200px;
+            background-color: #2b659c; 
+            background-image: url('file:///C:/Users/ILYAS/.gemini/antigravity/brain/a3caf3dd-e8bd-43b8-bba4-3802d19a7c94/billboard_bg_final_master_1782523335287.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 4px solid #555;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transform-origin: top center;
+            transform: scale(0.4); /* Scaled down for laptop viewing, can be adjusted */
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 65%;
+            height: 1030px; 
+            background: linear-gradient(90deg, rgba(15, 60, 115, 0.9) 0%, rgba(30, 100, 170, 0.75) 60%, rgba(255, 255, 255, 0) 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Draggable Components */
+        .component {
+            position: absolute;
+            z-index: 10;
+            cursor: move;
+            user-select: none;
+            /* Add a subtle outline when hovering to show it's interactable */
+        }
+        .component:hover {
+            outline: 2px dashed rgba(255, 215, 0, 0.5);
+            outline-offset: 5px;
+        }
+        .component.selected {
+            outline: 3px solid #FFD700;
+            outline-offset: 5px;
+        }
+
+        /* Allow editing text inside components */
+        .editable {
+            cursor: text;
+            user-select: auto;
+        }
+        .editable:focus {
+            outline: none;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Specific Component Styles (Initial positions) */
+        #cmp-logo { top: 60px; left: 120px; }
+        #cmp-nmc { top: 280px; left: 200px; }
+        #cmp-qr { top: 50px; right: 80px; }
+        
+        #cmp-script { top: 140px; left: 420px; }
+        #cmp-category { top: 230px; left: 520px; }
+        #cmp-hero { top: 320px; left: 220px; }
+        #cmp-countries { top: 470px; left: 300px; }
+        #cmp-price { top: 550px; left: 420px; }
+        #cmp-bullets { top: 700px; left: 300px; }
+
+        /* Footer Components */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 170px;
+            background-color: #0a142e;
+            border-top: 6px solid #d4af37;
+            z-index: 5;
+        }
+        #cmp-footer-left { bottom: 40px; left: 80px; z-index: 10; }
+        #cmp-footer-center { bottom: 40px; left: 600px; z-index: 10; }
+        #cmp-footer-right { bottom: 50px; right: 80px; z-index: 10; }
+
+
+        /* Styling details (same as before) */
+        .nmc-badge {
+            width: 140px; height: 140px; background: #fffdf5; border-radius: 50%;
+            border: 5px solid #d4af37; box-shadow: inset 0 0 0 3px white, 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        .nmc-badge .star { color: #d4af37; font-size: 20px; margin-bottom: 5px; }
+        .nmc-badge .text { color: #0D1B3E; font-weight: 800; font-size: 14px; line-height: 1.2; }
+
+        .qr-section {
+            background: white; padding: 15px; border-radius: 20px; border: 3px solid #d4af37;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .qr-code { width: 160px; height: 160px; margin-bottom: 10px; }
+        .qr-code img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none;}
+        .qr-text { color: #d4af37; font-weight: 800; font-size: 24px; text-transform: uppercase; }
+
+        .logo { width: 320px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: none;}
+
+        .script-text { font-family: 'Caveat', cursive; color: #e3ba4b; font-size: 70px; font-weight: 700; font-style: italic; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .category-label { color: #FFD700; font-size: 45px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .hero-text { color: #ffffff; font-size: 105px; font-weight: 900; line-height: 1.1; letter-spacing: -2px; text-shadow: 3px 3px 6px rgba(0,0,0,0.5); }
+        
+        .countries { color: #ffffff; font-size: 34px; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        .countries span { color: #e3ba4b; font-weight: 900; margin: 0 10px; }
+
+        .price-banner {
+            background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%); padding: 20px 60px; border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.5); border: 2px solid #ecd078;
+            color: #0D1B3E; font-size: 40px; font-weight: 900; text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+        }
+
+        .bullets { display: flex; gap: 25px; align-items: center; }
+        .bullet-item { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 600; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        .check-circle { width: 32px; height: 32px; border: 3px solid #e3ba4b; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #e3ba4b; font-size: 18px; font-weight: bold; }
+
+        .contact-left { display: flex; align-items: center; gap: 25px; }
+        .phone-icon { color: #d4af37; font-size: 50px; }
+        .phone-number { color: #d4af37; font-size: 75px; font-weight: 900; letter-spacing: -1px; }
+
+        .contact-center { display: flex; flex-direction: column; gap: 12px; }
+        .contact-item { display: flex; align-items: center; gap: 15px; }
+        .contact-icon { color: #87CEEB; font-size: 28px; width: 35px; text-align: center; }
+        .contact-text { color: white; font-size: 26px; font-weight: 500; }
+
+        .apply-btn {
+            background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%); color: #0D1B3E; padding: 20px 60px; border-radius: 50px;
+            font-size: 38px; font-weight: 900; text-transform: uppercase; box-shadow: 0 8px 15px rgba(0,0,0,0.3); border: 2px solid #ecd078;
+        }
+
+        svg { fill: currentColor; width: 1em; height: 1em; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <span><strong>Builder Mode:</strong> Drag any element to move it. Double-click text to edit.</span>
+        <button onclick="scaleElement(1.1)">Make Selected Bigger (+)</button>
+        <button onclick="scaleElement(0.9)">Make Selected Smaller (-)</button>
+        <button onclick="zoomView(0.1)">Zoom View In</button>
+        <button onclick="zoomView(-0.1)">Zoom View Out</button>
+    </div>
+
+    <div class="billboard" id="billboard">
+        <div class="gradient-overlay"></div>
+        <div class="bottom-bar"></div>
+
+        <!-- Components -->
+        <div class="component nmc-badge" id="cmp-nmc">
+            <div class="star">★</div>
+            <div class="text editable" contenteditable="true">NMC<br>Approved<br>& WHO<br>Recognized</div>
+        </div>
+
+        <div class="component qr-section" id="cmp-qr">
+            <div class="qr-code">
+                <img src="../qr_code.png" alt="QR Code" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://medwegabroad.com';">
+            </div>
+            <div class="qr-text editable" contenteditable="true">SCAN ME</div>
+        </div>
+
+        <div class="component" id="cmp-logo">
+            <img src="../logo.png" alt="MEDWEG Logo" class="logo">
+        </div>
+
+        <div class="component script-text editable" id="cmp-script" contenteditable="true">From Dream to Destination</div>
+        <div class="component category-label editable" id="cmp-category" contenteditable="true">MBBS ABROAD</div>
+        <div class="component hero-text editable" id="cmp-hero" contenteditable="true">Admissions Open 2026</div>
+        
+        <div class="component countries editable" id="cmp-countries" contenteditable="true">
+            Uzbekistan <span>•</span> Kazakhstan <span>•</span> Kyrgyzstan <span>•</span> Russia <span>•</span> Georgia
+        </div>
+
+        <div class="component price-banner editable" id="cmp-price" contenteditable="true">
+            Tuition Starting from Just ₹15 Lakhs
+        </div>
+
+        <div class="component bullets" id="cmp-bullets">
+            <div class="bullet-item"><div class="check-circle">✓</div><span class="editable" contenteditable="true">Trusted Guidance</span></div>
+            <div class="bullet-item"><div class="check-circle">✓</div><span class="editable" contenteditable="true">Hassle-Free Admission</span></div>
+            <div class="bullet-item"><div class="check-circle">✓</div><span class="editable" contenteditable="true">Higher FMGE Success Rate</span></div>
+        </div>
+
+        <div class="component contact-left" id="cmp-footer-left">
+            <div class="phone-icon">
+                <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.03 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+            </div>
+            <div class="phone-number editable" contenteditable="true">+91-87969 42407</div>
+        </div>
+
+        <div class="component contact-center" id="cmp-footer-center">
+            <div class="contact-item">
+                <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                <div class="contact-text editable" contenteditable="true">medwegaabroad@gmail.com</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+                <div class="contact-text editable" contenteditable="true">Khori Jamalpur, Dhauj, Faridabad – 121004</div>
+            </div>
+        </div>
+
+        <div class="component apply-btn editable" id="cmp-footer-right" contenteditable="true">APPLY NOW</div>
+    </div>
+
+    <script>
+        let selectedElement = null;
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+        let viewScale = 0.4;
+
+        const billboard = document.getElementById('billboard');
+
+        document.querySelectorAll('.component').forEach(el => {
+            // Track scale
+            el.dataset.scale = 1.0;
+
+            el.addEventListener('mousedown', function(e) {
+                if (e.target.isContentEditable) return; // Don't drag if clicking text to edit
+                
+                isDragging = true;
+                selectedElement = this;
+                
+                // Highlight selected
+                document.querySelectorAll('.component').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // Get initial position
+                const rect = this.getBoundingClientRect();
+                const billboardRect = billboard.getBoundingClientRect();
+                
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                // Read current inline left/top or compute it
+                const style = window.getComputedStyle(this);
+                initialX = parseFloat(style.left) || 0;
+                initialY = parseFloat(style.top) || 0;
+
+                e.preventDefault(); // Prevent text selection while dragging
+            });
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging || !selectedElement) return;
+
+            // Calculate scaled movement
+            const dx = (e.clientX - startX) / viewScale;
+            const dy = (e.clientY - startY) / viewScale;
+
+            selectedElement.style.left = (initialX + dx) + 'px';
+            selectedElement.style.top = (initialY + dy) + 'px';
+            // If they drag, clear bottom/right constraints so it purely uses top/left
+            selectedElement.style.bottom = 'auto';
+            selectedElement.style.right = 'auto';
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Click outside to deselect
+        document.addEventListener('mousedown', function(e) {
+            if (!e.target.closest('.component') && !e.target.closest('.toolbar')) {
+                document.querySelectorAll('.component').forEach(c => c.classList.remove('selected'));
+                selectedElement = null;
+            }
+        });
+
+        function scaleElement(factor) {
+            if (!selectedElement) {
+                alert("Please click on an element first to select it!");
+                return;
+            }
+            let currentScale = parseFloat(selectedElement.dataset.scale);
+            currentScale *= factor;
+            selectedElement.dataset.scale = currentScale;
+            selectedElement.style.transform = `scale(${currentScale})`;
+            selectedElement.style.transformOrigin = 'top left';
+        }
+
+        function zoomView(amount) {
+            viewScale += amount;
+            if (viewScale < 0.1) viewScale = 0.1;
+            billboard.style.transform = `scale(${viewScale})`;
+        }
+    </script>
+</body>
+</html>

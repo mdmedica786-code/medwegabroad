@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="150" viewBox="0 0 1100 150">
+    <defs>
+        <linearGradient id="gold-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e3ba4b" />
+            <stop offset="100%" stop-color="#c49525" />
+        </linearGradient>
+        <filter id="shadow" x="-10%" y="-20%" width="120%" height="160%">
+            <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.4"/>
+        </filter>
+    </defs>
+    
+    <!-- Gold Pill Shape -->
+    <rect x="20" y="20" width="1060" height="100" rx="50" ry="50" fill="url(#gold-grad)" stroke="#ecd078" stroke-width="4" filter="url(#shadow)"/>
+    
+    <!-- Text -->
+    <text x="550" y="87" font-family="'Montserrat', sans-serif" font-weight="900" font-size="45" fill="#0D1B3E" text-anchor="middle">Tuition Starting from Just ₹15 Lakhs</text>
+</svg>

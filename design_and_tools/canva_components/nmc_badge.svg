@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+    <!-- Drop shadow filter -->
+    <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.3"/>
+        </filter>
+    </defs>
+    
+    <!-- Base circle with gold stroke and shadow -->
+    <circle cx="150" cy="150" r="135" fill="#fffdf5" stroke="#d4af37" stroke-width="12" filter="url(#shadow)"/>
+    
+    <!-- Inner white ring to mimic inset shadow effect -->
+    <circle cx="150" cy="150" r="121" fill="none" stroke="#ffffff" stroke-width="6"/>
+    
+    <!-- Text Elements -->
+    <text x="150" y="90" font-family="'Montserrat', sans-serif" font-weight="800" font-size="45" fill="#d4af37" text-anchor="middle">★</text>
+    <text x="150" y="140" font-family="'Montserrat', sans-serif" font-weight="900" font-size="34" fill="#0D1B3E" text-anchor="middle">NMC</text>
+    <text x="150" y="180" font-family="'Montserrat', sans-serif" font-weight="800" font-size="30" fill="#0D1B3E" text-anchor="middle">Approved</text>
+    <text x="150" y="220" font-family="'Montserrat', sans-serif" font-weight="800" font-size="28" fill="#0D1B3E" text-anchor="middle">&amp; WHO</text>
+    <text x="150" y="255" font-family="'Montserrat', sans-serif" font-weight="800" font-size="26" fill="#0D1B3E" text-anchor="middle">Recognized</text>
+</svg>

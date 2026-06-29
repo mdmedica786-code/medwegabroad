@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDWEG Logo Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Create a beautiful studio-style white background */
+            background: radial-gradient(circle at center, #ffffff 0%, #f4f4f9 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            position: relative;
+            padding: 40px;
+            /* Enhance the presentation with a subtle presentation shadow */
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05),
+                        0 10px 20px rgba(0, 0, 0, 0.03);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo-container:hover {
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.08),
+                        0 15px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        img {
+            max-width: 900px;
+            width: 100%;
+            height: auto;
+            display: block;
+            /* Force the browser to render the image at the highest quality */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            /* Add a tiny bit of contrast and sharpening if needed */
+            filter: contrast(1.05) saturate(1.1);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        /* Show controls when moving mouse near bottom */
+        body:hover .controls {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-dark {
+            background-color: #0D1B3E; /* Medweg Navy */
+            color: #FFD700; /* Medweg Gold */
+        }
+        .btn-dark:hover {
+            background-color: #1a2f66;
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #e3ba4b 0%, #c49525 100%);
+            color: #0D1B3E;
+        }
+        .btn-gold:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <!-- Assuming the logo is saved as logo.png in the same directory -->
+        <!-- If it's a different filename, change the src below -->
+        <img src="logo.png" alt="MEDWEG Premium Logo" id="main-logo">
+    </div>
+
+    <div class="controls">
+        <button class="btn-dark" onclick="toggleBackground()">Toggle Dark/Light Mode</button>
+        <button class="btn-gold" onclick="downloadHQ()">Download Logo</button>
+    </div>
+
+    <script>
+        let isLight = true;
+        
+        function toggleBackground() {
+            const body = document.body;
+            const container = document.querySelector('.logo-container');
+            
+            if (isLight) {
+                // Switch to dark studio
+                body.style.background = 'radial-gradient(circle at center, #1a2035 0%, #0a0e17 100%)';
+                // If the logo has a built-in white background in the image itself, 
+                // keeping the container white is necessary.
+                container.style.background = 'rgba(255,255,255,1)';
+            } else {
+                // Switch to light studio
+                body.style.background = 'radial-gradient(circle at center, #ffffff 0%, #f4f4f9 100%)';
+                container.style.background = 'white';
+            }
+            isLight = !isLight;
+        }
+
+        function downloadHQ() {
+            const link = document.createElement('a');
+            link.href = document.getElementById('main-logo').src;
+            link.download = 'MEDWEG_Premium_Logo.png';
+            link.click();
+        }
+    </script>
+</body>
+</html>

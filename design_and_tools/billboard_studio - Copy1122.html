@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MEDWEG Billboard Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #222;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .toolbar {
+            background: #333;
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .toolbar button {
+            background: #d4af37; border: none; padding: 8px 15px; border-radius: 5px;
+            font-weight: bold; cursor: pointer; color: #0D1B3E; font-family: 'Montserrat';
+        }
+        .toolbar button:hover { background: #FFD700; }
+        .instructions { font-size: 14px; color: #ccc; }
+
+        /* The Canvas */
+        .billboard-container {
+            position: relative;
+            transform-origin: top center;
+            transform: scale(0.45); /* default zoom */
+            margin-bottom: 200px;
+        }
+
+        .billboard {
+            width: 2400px;
+            height: 1200px;
+            background-color: #2b659c; 
+            background-image: url('file:///C:/Users/ILYAS/.gemini/antigravity/brain/a3caf3dd-e8bd-43b8-bba4-3802d19a7c94/billboard_bg_final_master_1782523335287.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 4px solid #fff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+
+        .gradient-overlay {
+            position: absolute; top: 0; left: 0; width: 60%; height: 100%; 
+            background: linear-gradient(90deg, rgba(15, 50, 100, 0.85) 0%, rgba(30, 90, 160, 0.6) 65%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none; /* Let clicks pass through to items below */
+            z-index: 1;
+        }
+
+        /* Draggable Components */
+        .component {
+            position: absolute;
+            z-index: 10;
+            cursor: grab;
+            user-select: none;
+            /* Outlines to show it's a separate piece */
+            border: 2px dashed transparent;
+        }
+        .component:active { cursor: grabbing; }
+        .component:hover { border-color: rgba(255, 215, 0, 0.5); }
+        .component.selected { border: 3px solid #FFD700; z-index: 100; }
+
+        .editable { cursor: text; user-select: auto; }
+        .editable:focus { outline: none; background: rgba(255,255,255,0.1); }
+
+        /* --- Individual Pieces (No wrappers!) --- */
+        
+        /* 1. Logo */
+        #item-logo { top: 60px; left: 80px; width: 320px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); pointer-events: none;}
+        #wrapper-logo { top: 60px; left: 80px; z-index: 20;}
+
+        /* 2. NMC Badge */
+        #item-nmc {
+            top: 250px; left: 120px; width: 160px; height: 160px; background: #fffdf5; border-radius: 50%;
+            border: 6px solid #d4af37; box-shadow: inset 0 0 0 4px white, 0 8px 20px rgba(0,0,0,0.4);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        #item-nmc .star { color: #d4af37; font-size: 24px; margin-bottom: 2px; }
+        #item-nmc .text { color: #0D1B3E; font-weight: 800; font-size: 16px; line-height: 1.2; }
+
+        /* 3. QR Section */
+        #item-qr {
+            top: 50px; left: 2100px; background: white; padding: 20px; border-radius: 20px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4); border: 4px solid #d4af37; display: flex; flex-direction: column; align-items: center;
+        }
+        #item-qr img { width: 180px; height: 180px; margin-bottom: 15px; pointer-events: none; }
+        #item-qr .qr-text { color: #d4af37; font-weight: 800; font-size: 26px; text-transform: uppercase; }
+
+        /* 4. Text Stack Elements */
+        #item-script { top: 120px; left: 450px; font-family: 'Caveat', cursive; color: #FFD700; font-size: 75px; font-weight: 700; font-style: italic; text-shadow: 2px 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
+        #item-category { top: 210px; left: 550px; color: #FFD700; font-size: 65px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; text-shadow: 3px 3px 6px rgba(0,0,0,0.6); white-space: nowrap; }
+        #item-hero { top: 300px; left: 300px; color: #ffffff; font-size: 110px; font-weight: 900; letter-spacing: -2px; text-shadow: 4px 4px 8px rgba(0,0,0,0.6); white-space: nowrap; }
+        #item-countries { top: 450px; left: 350px; color: #ffffff; font-size: 34px; font-weight: 600; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); white-space: nowrap; }
+        #item-countries span { color: #FFD700; font-weight: 900; margin: 0 15px; }
+
+        /* 5. Price Pill */
+        #item-price {
+            top: 550px; left: 450px; background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%); padding: 22px 70px;
+            border-radius: 60px; box-shadow: 0 12px 25px rgba(0,0,0,0.5), inset 0 2px 6px rgba(255,255,255,0.6); border: 3px solid #ecd078;
+            color: #0D1B3E; font-size: 42px; font-weight: 900; text-shadow: 1px 1px 0px rgba(255,255,255,0.3); white-space: nowrap;
+        }
+
+        /* 6. Bullets */
+        .check-circle { width: 34px; height: 34px; border: 4px solid #FFD700; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #FFD700; font-size: 18px; font-weight: bold; background-color: rgba(0,0,0,0.2); pointer-events: none;}
+        .bullet-text { font-size: 26px; font-weight: 700; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); white-space: nowrap; }
+        
+        #item-bullet1 { top: 700px; left: 300px; display: flex; align-items: center; gap: 12px; }
+        #item-bullet2 { top: 700px; left: 650px; display: flex; align-items: center; gap: 12px; }
+        #item-bullet3 { top: 700px; left: 1050px; display: flex; align-items: center; gap: 12px; }
+
+        /* 7. Footer Elements */
+        #item-footer-bg {
+            top: 1030px; left: 0px; width: 2400px; height: 170px; background-color: #0a142e; border-top: 6px solid #d4af37; z-index: 2; pointer-events: none;
+        }
+        /* Make footer BG draggable if they really want, but usually it should just stay. We'll make it a component. */
+        #wrapper-footer-bg { top: 1030px; left: 0px; z-index: 2;}
+
+        #item-phone { top: 1070px; left: 80px; display: flex; align-items: center; gap: 20px; z-index: 20;}
+        #item-phone svg { color: #d4af37; font-size: 55px; width: 1em; height: 1em; fill: currentColor;}
+        #item-phone .num { color: #d4af37; font-size: 75px; font-weight: 900; letter-spacing: -1px; }
+
+        #item-email { top: 1060px; left: 700px; display: flex; align-items: center; gap: 15px; z-index: 20;}
+        #item-email svg { color: #87CEEB; font-size: 32px; width: 40px; text-align: center; fill: currentColor;}
+        #item-email .txt { color: white; font-size: 28px; font-weight: 500; }
+
+        #item-address { top: 1120px; left: 700px; display: flex; align-items: center; gap: 15px; z-index: 20;}
+        #item-address svg { color: #87CEEB; font-size: 32px; width: 40px; text-align: center; fill: currentColor;}
+        #item-address .txt { color: white; font-size: 28px; font-weight: 500; }
+
+        #item-apply {
+            top: 1060px; left: 1950px; background: linear-gradient(180deg, #e3ba4b 0%, #c49525 100%); color: #0D1B3E; padding: 22px 65px;
+            border-radius: 50px; font-size: 40px; font-weight: 900; text-transform: uppercase; box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            border: 2px solid #ecd078; z-index: 20;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Include libraries for downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <div class="toolbar">
+        <div class="instructions">
+            <strong>Ultimate Studio Mode:</strong> Click & Drag anything anywhere. Double-click text to edit.
+        </div>
+        <button onclick="scaleSelected(1.1)">Bigger (+)</button>
+        <button onclick="scaleSelected(0.9)">Smaller (-)</button>
+        <button onclick="zoomCanvas(0.1)">Zoom In</button>
+        <button onclick="zoomCanvas(-0.1)">Zoom Out</button>
+        <span style="border-left: 2px solid #555; height: 30px; margin: 0 10px;"></span>
+        <button onclick="exportImage('png')" style="background: #4caf50; color: white;">Download PNG</button>
+        <button onclick="exportImage('jpeg')" style="background: #2196f3; color: white;">Download JPG</button>
+        <button onclick="exportPDF()" style="background: #f44336; color: white;">Download PDF</button>
+    </div>
+
+    <div class="billboard-container">
+        <div class="billboard" id="billboard">
+            
+            <div class="gradient-overlay"></div>
+
+            <!-- Footer BG -->
+            <div class="component" id="wrapper-footer-bg">
+                <div id="item-footer-bg"></div>
+            </div>
+
+            <!-- Logo -->
+            <div class="component" id="wrapper-logo">
+                <img src="../logo.png" alt="MEDWEG Logo" id="item-logo">
+            </div>
+
+            <!-- NMC Badge -->
+            <div class="component" id="item-nmc">
+                <div class="star">★</div>
+                <div class="text editable" contenteditable="true">NMC<br>Approved<br>& WHO<br>Recognized</div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="component" id="item-qr">
+                <img src="../qr_code.png" alt="QR Code" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://medwegabroad.com';">
+                <div class="qr-text editable" contenteditable="true">SCAN ME</div>
+            </div>
+
+            <!-- Text Items -->
+            <div class="component editable" id="item-script" contenteditable="true">From Dream to Destination</div>
+            <div class="component editable" id="item-category" contenteditable="true">MBBS ABROAD</div>
+            <div class="component editable" id="item-hero" contenteditable="true">Admissions Open 2026</div>
+            
+            <div class="component editable" id="item-countries" contenteditable="true">
+                Uzbekistan <span>•</span> Kazakhstan <span>•</span> Kyrgyzstan <span>•</span> Russia <span>•</span> Georgia
+            </div>
+
+            <div class="component editable" id="item-price" contenteditable="true">Tuition Starting from Just ₹15 Lakhs</div>
+
+            <!-- Bullets -->
+            <div class="component" id="item-bullet1">
+                <div class="check-circle">✓</div><div class="bullet-text editable" contenteditable="true">Trusted Guidance</div>
+            </div>
+            <div class="component" id="item-bullet2">
+                <div class="check-circle">✓</div><div class="bullet-text editable" contenteditable="true">Hassle-Free Admission</div>
+            </div>
+            <div class="component" id="item-bullet3">
+                <div class="check-circle">✓</div><div class="bullet-text editable" contenteditable="true">Higher FMGE Success Rate</div>
+            </div>
+
+            <!-- Footer Elements -->
+            <div class="component" id="item-phone">
+                <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.03 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                <div class="num editable" contenteditable="true">+91-87969 42407</div>
+            </div>
+
+            <div class="component" id="item-email">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <div class="txt editable" contenteditable="true">medwegaabroad@gmail.com</div>
+            </div>
+
+            <div class="component" id="item-address">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <div class="txt editable" contenteditable="true">Khori Jamalpur, Dhauj, Faridabad – 121004</div>
+            </div>
+
+            <div class="component editable" id="item-apply" contenteditable="true">APPLY NOW</div>
+
+        </div>
+    </div>
+
+    <script>
+        let selectedEl = null;
+        let isDragging = false;
+        let startX, startY, initX, initY;
+        let canvasScale = 0.45;
+
+        const container = document.querySelector('.billboard-container');
+
+        // Fix: Make editable elements draggable by default. Only enable typing on double-click.
+        document.querySelectorAll('.editable').forEach(el => {
+            el.removeAttribute('contenteditable');
+            el.addEventListener('dblclick', function(e) {
+                this.setAttribute('contenteditable', 'true');
+                this.focus();
+            });
+            el.addEventListener('blur', function(e) {
+                this.removeAttribute('contenteditable');
+            });
+        });
+
+        document.querySelectorAll('.component').forEach(el => {
+            el.dataset.scale = 1.0;
+
+            el.addEventListener('mousedown', function(e) {
+                // If clicking to type text, don't drag
+                if (e.target.isContentEditable || this.isContentEditable) return; 
+
+                isDragging = true;
+                selectedEl = this;
+                
+                document.querySelectorAll('.component').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+
+                startX = e.clientX;
+                startY = e.clientY;
+
+                const style = window.getComputedStyle(this);
+                initX = parseFloat(style.left) || 0;
+                initY = parseFloat(style.top) || 0;
+
+                e.preventDefault(); 
+            });
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging || !selectedEl) return;
+
+            // Divide movement by scale to move accurately on zoomed canvas
+            const dx = (e.clientX - startX) / canvasScale;
+            const dy = (e.clientY - startY) / canvasScale;
+
+            selectedEl.style.left = (initX + dx) + 'px';
+            selectedEl.style.top = (initY + dy) + 'px';
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Click off to deselect
+        document.addEventListener('mousedown', function(e) {
+            if (!e.target.closest('.component') && !e.target.closest('.toolbar')) {
+                document.querySelectorAll('.component').forEach(c => c.classList.remove('selected'));
+                selectedEl = null;
+            }
+        });
+
+        function scaleSelected(factor) {
+            if (!selectedEl) return;
+            let cur = parseFloat(selectedEl.dataset.scale);
+            cur *= factor;
+            selectedEl.dataset.scale = cur;
+            selectedEl.style.transform = `scale(${cur})`;
+            selectedEl.style.transformOrigin = 'top left';
+        }
+
+        function zoomCanvas(amt) {
+            canvasScale += amt;
+            if (canvasScale < 0.1) canvasScale = 0.1;
+            container.style.transform = `scale(${canvasScale})`;
+        }
+
+        async function prepareForExport() {
+            // Deselect any active elements so the yellow border doesn't show up in the image
+            document.querySelectorAll('.component').forEach(c => c.classList.remove('selected'));
+            selectedEl = null;
+            
+            // Temporarily reset the scale of the container so html2canvas captures the full 2400x1200 resolution
+            const oldScale = container.style.transform;
+            container.style.transform = 'scale(1)';
+            
+            // Wait a tiny bit for the DOM to update the scale visually
+            await new Promise(r => setTimeout(r, 100));
+            return oldScale;
+        }
+
+        function restoreAfterExport(oldScale) {
+            container.style.transform = oldScale;
+        }
+
+        async function exportImage(format) {
+            try {
+                const oldScale = await prepareForExport();
+                const canvas = await html2canvas(document.getElementById('billboard'), {
+                    scale: 1, 
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null
+                });
+                restoreAfterExport(oldScale);
+
+                const link = document.createElement('a');
+                link.download = `medweg_billboard.${format}`;
+                link.href = canvas.toDataURL(`image/${format}`, 1.0);
+                link.click();
+            } catch (err) {
+                console.error("Export failed:", err);
+                alert("Export failed. If you see a blank image, you may need to open this file using a local web server (like VSCode Live Server) due to browser security blocking local file exports.");
+                restoreAfterExport(`scale(${canvasScale})`);
+            }
+        }
+
+        async function exportPDF() {
+            try {
+                const oldScale = await prepareForExport();
+                const canvas = await html2canvas(document.getElementById('billboard'), {
+                    scale: 1, 
+                    useCORS: true,
+                    allowTaint: true
+                });
+                restoreAfterExport(oldScale);
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const { jsPDF } = window.jspdf;
+                
+                // Create PDF with custom size matching the billboard 2400x1200 pixels
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [2400, 1200]
+                });
+                
+                pdf.addImage(imgData, 'JPEG', 0, 0, 2400, 1200);
+                pdf.save('medweg_billboard.pdf');
+            } catch (err) {
+                console.error("Export failed:", err);
+                alert("Export failed. Please open this file via a local web server to enable PDF export.");
+                restoreAfterExport(`scale(${canvasScale})`);
+            }
+        }
+    </script>
+</body>
+</html>
