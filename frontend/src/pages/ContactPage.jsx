@@ -169,16 +169,15 @@ export default function ContactPage() {
       <section className="py-10 px-5 sm:px-12 bg-gray-50 border-t border-gray-100">
         <div className="max-w-[1100px] mx-auto">
           <div className="font-montserrat text-2xl font-extrabold text-brand-blue mb-6 text-center">Visit Our Office</div>
-          <div className="w-full h-[400px] rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-            <iframe
-              title="MedWeg Office Location"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              scrolling="no"
-              marginHeight="0"
-              marginWidth="0"
-              src="https://maps.google.com/maps?q=28.314741789369158,77.17694988119791&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          <div className="w-full h-[450px] rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d717.6501919629222!2d77.28992209273974!3d28.330543137648657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cdbde3c76c277%3A0x35227718bc56f9b4!2sJK%20CLINIC!5e0!3m2!1sen!2sus!4v1782720243502!5m2!1sen!2sus" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
           <div className="text-center mt-4 text-sm text-[#5a6a8a] font-medium">

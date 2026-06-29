@@ -338,6 +338,29 @@ export default function HomePage({ setPage, setSelectedCountry }) {
         </div>
       </section>
 
+      {/* Google Map Section */}
+      <section className="py-16 px-5 sm:px-12 bg-white">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="text-center mb-8">
+            <div className="font-montserrat text-[11px] font-bold text-brand-orange tracking-[4px] uppercase mb-2.5">Find Us Here</div>
+            <div className="font-montserrat text-3xl md:text-[40px] font-extrabold text-brand-blue leading-tight">
+              Visit Our <span className="font-playfair italic text-brand-orange">Office</span>
+            </div>
+          </div>
+          <div className="w-full h-[450px] rounded-3xl overflow-hidden shadow-lg border border-gray-100">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d717.6501919629222!2d77.28992209273974!3d28.330543137648657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cdbde3c76c277%3A0x35227718bc56f9b4!2sJK%20CLINIC!5e0!3m2!1sen!2sus!4v1782720243502!5m2!1sen!2sus" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-16 px-5 sm:px-12 bg-gradient-to-br from-brand-blue to-[#152448] relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FFE62B] via-[#F89922] to-[#E95124]" />
